@@ -1,0 +1,139 @@
+---
+const sampleTexts = [
+  "In the digital age, technology continues to reshape our daily lives in profound ways. From artificial intelligence to quantum computing, we're witnessing unprecedented advances that challenge our understanding of what's possible. These innovations not only transform how we work and communicate but also raise important questions about privacy, ethics, and the future of human interaction.",
+  "The art of programming is a delicate balance between creativity and logic. Developers must think like architects, designing elegant solutions while maintaining clean, efficient code. Every line written is a brushstroke on the canvas of functionality, creating systems that power our modern world. The best code is not just functional, but readable, maintainable, and scalable.",
+  "Cybersecurity has become increasingly critical in our interconnected world. As systems grow more complex, so do the threats they face. Security experts work tirelessly to protect networks, data, and privacy from constantly evolving threats. The challenge lies not just in building strong defenses, but in anticipating and preventing future vulnerabilities.",
+  "The evolution of user interface design has transformed how we interact with computers. What started as command-line interfaces has blossomed into intuitive, responsive experiences that adapt to our needs. Modern designers must balance aesthetics with functionality, creating interfaces that are both beautiful and efficient."
+];
+---
+
+<div class="max-w-3xl mx-auto">
+  <div class="bg-gray-900 border-2 border-pink-500 rounded-lg p-6 mb-6 shadow-lg shadow-pink-500/20">
+    <div id="text-display" class="font-mono text-xl mb-4 text-gray-400 min-h-[100px] leading-relaxed">
+      Click Start to begin...
+    </div>
+    
+    <div class="relative">
+      <input
+        type="text"
+        id="typing-input"
+        class="w-full bg-gray-800 font-mono text-xl p-4 rounded border-2 border-pink-500 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-500/50 disabled:opacity-50"
+        disabled
+      />
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center mb-8">
+    <div class="stats space-y-2">
+      <div class="text-xl font-['Press_Start_2P']">
+        WPM: <span id="wpm" class="text-pink-400">0</span>
+      </div>
+      <div class="text-xl font-['Press_Start_2P']">
+        Accuracy: <span id="accuracy" class="text-pink-400">0%</span>
+      </div>
+    </div>
+    <button
+      id="start-button"
+      class="bg-pink-500 hover:bg-pink-600 text-black font-['Press_Start_2P'] px-8 py-4 rounded transition-all hover:scale-105 active:scale-95"
+    >
+      Start
+    </button>
+  </div>
+</div>
+
+<script>
+  let startTime: number;
+  let timer: number;
+  let currentText: string;
+  let isTestActive = false;
+
+  const textDisplay = document.getElementById('text-display') as HTMLDivElement;
+  const typingInput = document.getElementById('typing-input') as HTMLInputElement;
+  const startButton = document.getElementById('start-button') as HTMLButtonElement;
+  const wpmDisplay = document.getElementById('wpm') as HTMLSpanElement;
+  const accuracyDisplay = document.getElementById('accuracy') as HTMLSpanElement;
+
+  const sampleTexts = [
+    "The quick brown fox jumps over the lazy dog.",
+    "In a world of virtual reality, we type our dreams into existence.",
+    "Neon lights flicker in the digital rain of cyberpunk cities.",
+    "Programming is the art of telling another human what one wants the computer to do.",
+  ];
+
+  function getRandomText() {
+    return sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+  }
+
+  function calculateWPM(startTime: number, endTime: number, typedLength: number) {
+    const timeInMinutes = (endTime - startTime) / 60000;
+    const words = typedLength / 5;
+    return Math.round(words / timeInMinutes);
+  }
+
+  function calculateAccuracy(original: string, typed: string) {
+    if (typed.length === 0) return 0;
+    let correct = 0;
+    const minLength = Math.min(original.length, typed.length);
+    
+    for (let i = 0; i < minLength; i++) {
+      if (original[i] === typed[i]) correct++;
+    }
+    
+    return Math.round((correct / original.length) * 100);
+  }
+
+  function startTest() {
+    isTestActive = true;
+    currentText = getRandomText();
+    textDisplay.textContent = currentText;
+    typingInput.value = '';
+    typingInput.disabled = false;
+    typingInput.focus();
+    startTime = Date.now();
+    startButton.textContent = 'Reset';
+  }
+
+  function resetTest() {
+    isTestActive = false;
+    textDisplay.textContent = 'Click Start to begin...';
+    typingInput.value = '';
+    typingInput.disabled = true;
+    typingInput.className = 'w-full bg-gray-800 text-pink-500 font-mono text-xl p-4 rounded border-2 border-pink-500 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-500/50 disabled:opacity-50';
+    wpmDisplay.textContent = '0';
+    accuracyDisplay.textContent = '0%';
+    accuracyDisplay.className = 'text-pink-400';
+    startButton.textContent = 'Start';
+  }
+
+  startButton.addEventListener('click', () => {
+    if (isTestActive) {
+      resetTest();
+    } else {
+      startTest();
+    }
+  });
+
+  typingInput.addEventListener('input', () => {
+    if (!isTestActive) return;
+
+    const typed = typingInput.value;
+    const accuracy = calculateAccuracy(currentText, typed);
+    accuracyDisplay.textContent = `${accuracy}%`;
+
+    const wpm = calculateWPM(startTime, Date.now(), typed.length);
+    wpmDisplay.textContent = wpm.toString();
+
+    if (typed === currentText) {
+      isTestActive = false;
+      typingInput.disabled = true;
+      startButton.textContent = 'Start';
+    }
+  });
+
+  function getColorClass(accuracy: number) {
+    if (accuracy >= 95) return 'text-green-400';
+    if (accuracy >= 85) return 'text-blue-400';
+    if (accuracy >= 70) return 'text-yellow-400';
+    return 'text-red-400';
+  }
+</script>

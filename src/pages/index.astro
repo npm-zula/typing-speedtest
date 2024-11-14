@@ -1,16 +1,22 @@
 ---
-
+import TypingTest from '../components/TypingTest.astro';
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Retro Type | Typing Speed Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-gradient-to-b from-purple-900 to-black min-h-screen text-pink-500">
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-center text-4xl mb-8 font-['Press_Start_2P'] text-pink-500 animate-pulse">
+        RETRO TYPE
+      </h1>
+      <TypingTest />
+    </main>
+  </body>
 </html>
